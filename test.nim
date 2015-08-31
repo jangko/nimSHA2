@@ -1,4 +1,4 @@
-import sha2, strutils
+import nimSHA2, strutils
 
 proc `$`(val: uint32): string =
   result = toHex(cast[int](val), 8)
