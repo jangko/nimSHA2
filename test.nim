@@ -1,19 +1,5 @@
 import nimSHA2, strutils
 
-proc `$`(val: uint32): string =
-  result = toHex(cast[int](val), 8)
-
-proc `$`(val: openArray[uint32]): string =
-  result = ""
-  for x in val: result.add($x)
-
-proc `$`(val: uint64): string =
-  result = toHex(cast[int64](val), 16)
-
-proc `$`(val: openArray[uint64]): string =
-  result = ""
-  for x in val: result.add($x)
-  
 type
   SHATest = tuple[text,v224,v256,v384,v512:string]
 
@@ -58,11 +44,6 @@ proc toSHA256(input: string): SHA256Digest = input.toSHA(result.len)
 proc toSHA384(input: string): SHA384Digest = input.toSHA(result.len)
 proc toSHA512(input: string): SHA512Digest = input.toSHA(result.len)
 
-proc `$`(arr: openArray[char]): string =
-  result = ""
-  for i in 0..arr.high:
-    result.add(toHex(ord(arr[i]), 2))
-
 proc testVec(i: int, rep: int = 1) =
   let vec224 = toSHA224(testVector[i].v224)
   let vec256 = toSHA256(testVector[i].v256)
@@ -72,10 +53,10 @@ proc testVec(i: int, rep: int = 1) =
   let in256 = computeSHA256(testVector[i].text, rep)
   let in384 = computeSHA384(testVector[i].text, rep)
   let in512 = computeSHA512(testVector[i].text, rep)
-  assert vec224 == in224
-  assert vec256 == in256
-  assert vec384 == in384
-  assert vec512 == in512
+  doAssert vec224 == in224
+  doAssert vec256 == in256
+  doAssert vec384 == in384
+  doAssert vec512 == in512
 
 proc test() =
   for i in 0..2: testVec(i)
@@ -94,3 +75,4 @@ let digest = sha.final()
 
 let digest2 = computeSHA256("test SHA256")
 echo digest2.toHex
+doAssert digest == digest2
