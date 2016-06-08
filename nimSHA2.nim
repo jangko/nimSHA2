@@ -394,7 +394,12 @@ proc `$`*(sha: SHA256Digest): string = toString(sha)
 proc `$`*(sha: SHA384Digest): string = toString(sha)
 proc `$`*(sha: SHA512Digest): string = toString(sha)  
 
-proc toHex*[T: SHA224Digest|SHA256Digest|SHA384Digest|SHA512Digest](input: T): string =
+proc toHexImpl[T](input: T): string =
   result = ""
   for c in input:
     result.add toHex(ord(c), 2)
+    
+proc hex*(sha: SHA224Digest): string = toHexImpl(sha)
+proc hex*(sha: SHA256Digest): string = toHexImpl(sha)
+proc hex*(sha: SHA384Digest): string = toHexImpl(sha)
+proc hex*(sha: SHA512Digest): string = toHexImpl(sha)  

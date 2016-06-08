@@ -74,5 +74,5 @@ sha.update("test SHA256")
 let digest = sha.final()
 
 let digest2 = computeSHA256("test SHA256")
-echo digest2.toHex
+echo digest2.hex
 doAssert digest == digest2
