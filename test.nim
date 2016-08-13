@@ -35,7 +35,7 @@ const
       "5441235cc0235341ed806a64fb354742b5e5c02a3c5cb71b5f63fb793458d8fdae599c8cd8884943c04f11b31b89f023",
       "b47c933421ea2db149ad6e10fce6c7f93d0752380180ffd7f4629a712134831d77be6091b819ed352c2967a2e2d4fa5050723c9630691f1a05a7281dbe6c1086")]
 
-template toSHA(input: string, len: int): stmt =
+template toSHA(input: string, len: int): untyped =
   for i in 0..len-1:
     result[i] = chr(parseHexInt(input[i*2] & input[i*2 + 1]))
 
