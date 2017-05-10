@@ -1,7 +1,7 @@
-#nimSHA2
+# nimSHA2
 
-###Secure Hash Algorithm 2
-#####224, 256, 384, and 512 bits
+### Secure Hash Algorithm 2
+##### 224, 256, 384, and 512 bits
 
 initially this was part of [nimPDF](https://github.com/jangko/nimpdf) project, then I decided to release it separately
 
