@@ -402,4 +402,9 @@ proc toHexImpl[T](input: T): string =
 proc hex*(sha: SHA224Digest): string = toHexImpl(sha)
 proc hex*(sha: SHA256Digest): string = toHexImpl(sha)
 proc hex*(sha: SHA384Digest): string = toHexImpl(sha)
-proc hex*(sha: SHA512Digest): string = toHexImpl(sha)  
+proc hex*(sha: SHA512Digest): string = toHexImpl(sha)
+
+proc toHex*(sha: SHA224Digest): string = toHexImpl(sha)
+proc toHex*(sha: SHA256Digest): string = toHexImpl(sha)
+proc toHex*(sha: SHA384Digest): string = toHexImpl(sha)
+proc toHex*(sha: SHA512Digest): string = toHexImpl(sha)  
