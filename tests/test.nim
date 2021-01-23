@@ -1,4 +1,4 @@
-import nimSHA2, strutils
+import ../nimSHA2, strutils, unittest
 
 type
   SHATest = tuple[text,v224,v256,v384,v512:string]
@@ -59,20 +59,20 @@ proc testVec(i: int, rep: int = 1) =
   doAssert vec512 == in512
 
 proc test() =
-  for i in 0..2: testVec(i)
-  testVec(3, 1000) #one million 'a'
-  #echo "OK1"
-  #testVec(4, 16_777_216) #take a while
-  #echo "OK2"
-  
-  echo "OK"
-    
+  suite "nimSHA2 test suite":
+    test "test vector":
+      for i in 0..2: testVec(i)
+      testVec(3, 1000) #one million 'a'
+      #echo "OK1"
+      #testVec(4, 16_777_216) #take a while
+      #echo "OK2"
+
+    test "computeSHA vs init..final":
+      var sha = initSHA[SHA256]()
+      sha.update("test SHA256")
+      let digest = sha.final()
+
+      let digest2 = computeSHA256("test SHA256")
+      doAssert digest == digest2
+
 test()
-
-var sha = initSHA[SHA256]()
-sha.update("test SHA256")
-let digest = sha.final()
-
-let digest2 = computeSHA256("test SHA256")
-echo digest2.hex
-doAssert digest == digest2
