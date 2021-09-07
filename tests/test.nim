@@ -37,7 +37,7 @@ const
 
 template toSHA(input: string, len: int): untyped =
   for i in 0..len-1:
-    result[i] = chr(parseHexInt(input[i*2] & input[i*2 + 1]))
+    result[i] = uint8(parseHexInt(input[i*2] & input[i*2 + 1]))
 
 proc toSHA224(input: string): SHA224Digest = input.toSHA(result.len)
 proc toSHA256(input: string): SHA256Digest = input.toSHA(result.len)
