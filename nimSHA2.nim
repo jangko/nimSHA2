@@ -102,10 +102,10 @@ type
 
   SHA512* = object of SHA384
 
-  SHA224Digest* = array[0..27, char]
-  SHA256Digest* = array[0..31, char]
-  SHA384Digest* = array[0..47, char]
-  SHA512Digest* = array[0..63, char]
+  SHA224Digest* = array[0..27, uint8]
+  SHA256Digest* = array[0..31, uint8]
+  SHA384Digest* = array[0..47, uint8]
+  SHA512Digest* = array[0..63, uint8]
 
 proc initSHA*(ctx: var SHA224) =
   ctx.count[0] = 0
@@ -229,14 +229,13 @@ proc transform256(state: var array[0..7, uint32], input: cstring) =
   state[6] += g(0)
   state[7] += h(0)
 
-proc update*(ctx: var SHA224, input: string) =
-  var len = input.len
-  var data = cstring(input)
+func update*[T:char|byte](ctx: var (SHA224|SHA256), data: openarray[T]) =
+  var len = data.len
   var pos = 0
   while len > 0:
     let copy_start = int(ctx.count[0] and 0x3F)
     let copy_size = min(64 - copy_start, len)
-    copyMem(addr(ctx.buffer[copy_start]), addr(data[pos]), copy_size)
+    copyMem(addr(ctx.buffer[copy_start]), unsafeAddr(data[pos]), copy_size)
 
     inc(pos, copy_size)
     dec(len, copy_size)
@@ -247,9 +246,6 @@ proc update*(ctx: var SHA224, input: string) =
 
     if (ctx.count[0] and 0x3F) == 0:
       transform256(ctx.state, cast[cstring](addr(ctx.buffer[0])))
-
-proc update*(ctx: var SHA256, input: string) {.inline.} =
-  SHA224(ctx).update(input)
 
 proc transform512(state: var array[0..7, uint64], input: cstring) =
   let K = SHA512_K
@@ -281,14 +277,13 @@ proc transform512(state: var array[0..7, uint64], input: cstring) =
   state[6] += g(0)
   state[7] += h(0)
 
-proc update*(ctx: var SHA384, input: string) =
-  var len = input.len
-  var data = cstring(input)
+func update*[T:char|byte](ctx: var (SHA384|SHA512), data: openarray[T]) =
+  var len = data.len
   var pos = 0
   while len > 0:
     let copy_start = int(ctx.count[0] and 0x7F)
     let copy_size = min(128 - copy_start, len)
-    copyMem(addr(ctx.buffer[copy_start]), addr(data[pos]), copy_size)
+    copyMem(addr(ctx.buffer[copy_start]), unsafeAddr(data[pos]), copy_size)
 
     inc(pos, copy_size)
     dec(len, copy_size)
@@ -299,9 +294,6 @@ proc update*(ctx: var SHA384, input: string) =
 
     if (ctx.count[0] and 0x7F) == 0:
       transform512(ctx.state, cast[cstring](addr(ctx.buffer[0])))
-
-proc update*(ctx: var SHA512, input: string) {.inline.} =
-  SHA384(ctx).update(input)
 
 proc final224_256(ctx: var SHA224) =
   var buffer = cast[cstring](addr(ctx.buffer[0]))
@@ -387,8 +379,8 @@ proc computeSHA512*(input: string, rep: int = 1): SHA512Digest = computeSHA[SHA5
 
 proc toString[T](input: T): string =
   result = newString(input.len)
-  for i in 0..input.len-1: result[i] = input[i]
-  
+  for i in 0..input.len-1: result[i] = input[i].char
+
 proc `$`*(sha: SHA224Digest): string = toString(sha)
 proc `$`*(sha: SHA256Digest): string = toString(sha)
 proc `$`*(sha: SHA384Digest): string = toString(sha)
